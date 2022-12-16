@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@SuperBuilder
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
