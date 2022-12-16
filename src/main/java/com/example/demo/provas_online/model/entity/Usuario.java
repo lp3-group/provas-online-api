@@ -2,8 +2,10 @@ package com.example.demo.provas_online.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @AllArgsConstructor
@@ -19,5 +21,5 @@ public class Usuario {
     private String senha;
 
     @Column(unique = true)
-    private String email;
+    private String nomeUsuario;
 }
