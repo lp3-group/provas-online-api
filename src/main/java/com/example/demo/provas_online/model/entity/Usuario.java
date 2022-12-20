@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.beans.factory.annotation.Value;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +21,8 @@ public class Usuario {
     private String nome;
     private String sobrenome;
     private String senha;
+
+    private boolean primeiroAcesso = true;
 
     @Column(unique = true)
     private String nomeUsuario;
