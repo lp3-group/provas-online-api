@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -102,5 +103,13 @@ public class UsuarioService implements UserDetailsService {
 
     private Optional<Estudante> getEstudante(String nomeUsuario) throws UsernameNotFoundException {
         return estudanteRepository.findByNomeUsuario(nomeUsuario);
+    }
+
+    public List<Administrador> getAdministradores() {
+        return administradorRepository.findAll();
+    }
+
+    public List<Estudante> getEstudantes() {
+        return estudanteRepository.findAll();
     }
 }
