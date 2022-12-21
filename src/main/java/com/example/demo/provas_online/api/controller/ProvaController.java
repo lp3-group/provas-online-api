@@ -2,11 +2,14 @@ package com.example.demo.provas_online.api.controller;
 
 import com.example.demo.provas_online.api.dto.NovaProvaDTO;
 import com.example.demo.provas_online.api.dto.ProvaDTO;
+import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
+import com.example.demo.provas_online.exception.ProvaJaExisteException;
 import com.example.demo.provas_online.model.entity.Prova;
 import com.example.demo.provas_online.service.ProvaService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +28,18 @@ public class ProvaController {
 
     @PostMapping()
     public ResponseEntity criarProva(@RequestBody NovaProvaDTO corpoRequisicao) {
-        Prova prova = modelMapper.map(corpoRequisicao, Prova.class);
+        try {
+            Prova prova = modelMapper.map(corpoRequisicao, Prova.class);
 
-        Prova provaCriada = service.criarProva(prova);
+            Prova provaCriada = service.validarECriarProva(prova);
 
-        ProvaDTO retorno = modelMapper.map(provaCriada, ProvaDTO.class);
+            ProvaDTO retorno = modelMapper.map(provaCriada, ProvaDTO.class);
 
-        return ResponseEntity.ok(retorno);
+            return new ResponseEntity(retorno, HttpStatus.CREATED);
+        } catch (DisciplinaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (ProvaJaExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }
