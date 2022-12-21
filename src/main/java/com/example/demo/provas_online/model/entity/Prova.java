@@ -24,7 +24,8 @@ public class Prova {
     @CreationTimestamp
     private Date criadaEm;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "prova")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "prova_id")
     private List<Questao> questoes;
 
     @ManyToOne
