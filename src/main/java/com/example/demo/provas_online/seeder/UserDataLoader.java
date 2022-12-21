@@ -6,12 +6,13 @@ import com.example.demo.provas_online.model.repository.AdministradorRepository;
 import com.example.demo.provas_online.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserDataLoader implements CommandLineRunner {
     @Autowired
-    private AuthService authService;
+    private PasswordEncoder encoder;
 
     @Autowired
     private AdministradorRepository administradorRepository;
@@ -26,7 +27,7 @@ public class UserDataLoader implements CommandLineRunner {
             Administrador adm = Administrador.builder()
                     .nome("Administrador")
                     .nomeUsuario("admin")
-                    .senha(authService.encriptarSenha("123456"))
+                    .senha(encoder.encode("123456"))
                     .build();
 
             administradorRepository.save(adm);
