@@ -11,6 +11,7 @@ import com.example.demo.provas_online.model.entity.Estudante;
 import com.example.demo.provas_online.model.entity.Usuario;
 import com.example.demo.provas_online.service.UsuarioService;
 import com.example.demo.provas_online.types.TipoUsuario;
+import com.example.demo.provas_online.utility.MapeadorDeListas;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +49,8 @@ public class UsuarioController {
         List<Estudante> estudantes = service.getEstudantes();
 
         UsuariosDTO retorno = new UsuariosDTO(
-                mapeiaListaParaListaDeDTO(administradores, AdministradorDTO.class),
-                mapeiaListaParaListaDeDTO(estudantes, EstudanteDTO.class)
+                MapeadorDeListas.mapeiaListaParaListaDeDTO(administradores, AdministradorDTO.class),
+                MapeadorDeListas.mapeiaListaParaListaDeDTO(estudantes, EstudanteDTO.class)
         );
 
         return ResponseEntity.ok(retorno);
@@ -64,9 +65,5 @@ public class UsuarioController {
         } catch (UsuarioNaoExisteException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-    }
-
-    private <T, K> List<K> mapeiaListaParaListaDeDTO(List<T> listaOrigem, Class<K> classeDestino) {
-        return listaOrigem.stream().map(item -> modelMapper.map(item, classeDestino)).toList();
     }
 }
