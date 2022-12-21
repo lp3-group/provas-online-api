@@ -1,6 +1,9 @@
 package com.example.demo.provas_online.api.controller;
 
+import com.example.demo.provas_online.api.dto.AdministradorDTO;
 import com.example.demo.provas_online.api.dto.CriarUsuarioDTO;
+import com.example.demo.provas_online.api.dto.EstudanteDTO;
+import com.example.demo.provas_online.api.dto.UsuariosDTO;
 import com.example.demo.provas_online.exception.UsuarioJaExisteException;
 import com.example.demo.provas_online.model.entity.Administrador;
 import com.example.demo.provas_online.model.entity.Estudante;
@@ -14,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
@@ -23,7 +28,7 @@ public class UsuarioController {
 
     private final UsuarioService service;
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity criarUsuario(@RequestBody CriarUsuarioDTO requisicao) {
         try {
             Usuario usuario = modelMapper.map(requisicao, requisicao.getTipoUsuario() == TipoUsuario.administrador ? Administrador.class : Estudante.class);
@@ -34,5 +39,22 @@ public class UsuarioController {
         } catch (UsuarioJaExisteException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping()
+    public ResponseEntity obterUsuarios() {
+        List<Administrador> administradores = service.getAdministradores();
+        List<Estudante> estudantes = service.getEstudantes();
+
+        UsuariosDTO retorno = new UsuariosDTO(
+                mapeiaListaParaListaDeDTO(administradores, AdministradorDTO.class),
+                mapeiaListaParaListaDeDTO(estudantes, EstudanteDTO.class)
+        );
+
+        return ResponseEntity.ok(retorno);
+    }
+
+    private <T, K> List<K> mapeiaListaParaListaDeDTO(List<T> listaOrigem, Class<K> classeDestino) {
+        return listaOrigem.stream().map(item -> modelMapper.map(item, classeDestino)).toList();
     }
 }
