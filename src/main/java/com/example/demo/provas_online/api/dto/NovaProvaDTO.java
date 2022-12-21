@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class NovaProvaDTO {
+    private String titulo;
     private List<NovaQuestaoDTO> questoes;
-    private Integer disciplinaId;
+    private Integer idDisciplina;
 }

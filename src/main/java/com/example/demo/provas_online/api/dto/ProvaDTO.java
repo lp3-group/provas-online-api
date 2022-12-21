@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProvaDTO {
     private Integer id;
+    private String titulo;
     private Date criadaEm;
     private List<QuestaoDTO> questoes;
     private DisciplinaDTO disciplina;
