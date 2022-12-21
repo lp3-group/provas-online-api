@@ -2,14 +2,17 @@ package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.exception.ProvaJaExisteException;
+import com.example.demo.provas_online.model.entity.Alternativa;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.entity.Prova;
+import com.example.demo.provas_online.model.entity.Questao;
 import com.example.demo.provas_online.model.repository.DisciplinaRepository;
 import com.example.demo.provas_online.model.repository.ProvaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,5 +40,9 @@ public class ProvaService {
         prova.setDisciplina(disciplina.get());
 
         return provaRepository.save(prova);
+    }
+
+    public List<Prova> obterProvas() {
+        return provaRepository.findAll();
     }
 }
