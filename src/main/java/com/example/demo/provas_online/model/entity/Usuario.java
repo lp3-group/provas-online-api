@@ -1,12 +1,11 @@
 package com.example.demo.provas_online.model.entity;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.beans.factory.annotation.Value;
+
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
