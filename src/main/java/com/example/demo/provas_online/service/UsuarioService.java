@@ -8,22 +8,26 @@ import com.example.demo.provas_online.model.repository.AdministradorRepository;
 import com.example.demo.provas_online.model.repository.EstudanteRepository;
 import com.example.demo.provas_online.types.TipoUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 @Service
-public class UsuarioService {
+public class UsuarioService implements UserDetailsService {
+    @Autowired
+    private PasswordEncoder encoder;
+
     @Autowired
     private AdministradorRepository administradorRepository;
 
     @Autowired
     private EstudanteRepository estudanteRepository;
-
-    @Autowired
-    private AuthService authService;
 
     public void validarESalvarUsuario (Usuario usuario) throws UsuarioJaExisteException {
         TipoUsuario tipoUsuario = usuario instanceof Administrador ? TipoUsuario.administrador : TipoUsuario.estudante;
@@ -35,7 +39,7 @@ public class UsuarioService {
             validarMatricula(estudante.getMatricula());
         }
 
-        usuario.setSenha(authService.encriptarSenha(usuario.getSenha()));
+        usuario.setSenha(encoder.encode(usuario.getSenha()));
 
         salvar(usuario);
     }
@@ -50,7 +54,7 @@ public class UsuarioService {
     }
 
     private void validarNomeUsuario(String nomeUsuario, TipoUsuario tipo) throws UsuarioJaExisteException {
-        Optional<Usuario> usuario = getUsuario(tipo.name(), nomeUsuario);
+        Optional<Usuario> usuario = getUsuario(nomeUsuario);
 
         if(usuario.isPresent()) {
             throw new UsuarioJaExisteException();
@@ -65,12 +69,32 @@ public class UsuarioService {
         }
     }
 
-    public Optional getUsuario(String tipo, String nomeUsuario) {
-        return ehAdministrador(tipo) ? getAdministrador(nomeUsuario) : getEstudante(nomeUsuario);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Usuario> usuario = getUsuario(username);
+
+        if(usuario.isEmpty()) {
+            throw new UsernameNotFoundException("Usuário não encontrado");
+        }
+
+        String[] roles = usuario.get() instanceof Administrador ? new String[]{"ADMIN", "ESTUDANTE"} : new String[]{"ESTUDANTE"};
+
+        return User
+                .builder()
+                .username(usuario.get().getNomeUsuario())
+                .password(usuario.get().getSenha())
+                .roles(roles)
+                .build();
     }
 
-    private boolean ehAdministrador(String tipo) {
-        return tipo.equals("administrador");
+    public Optional getUsuario(String nomeUsuario) {
+        Optional<Administrador> administrador = getAdministrador(nomeUsuario);
+
+        if(administrador.isPresent()) {
+            return administrador;
+        }
+
+        return getEstudante(nomeUsuario);
     }
 
     private Optional<Administrador> getAdministrador(String nomeUsuario) {
