@@ -64,4 +64,15 @@ public class DisciplinaController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity excluirDisciplina(@PathVariable("id") Integer id) {
+        try {
+            service.validarEExcluirDisciplina(id);
+
+            return ResponseEntity.noContent().build();
+        } catch (DisciplinaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
