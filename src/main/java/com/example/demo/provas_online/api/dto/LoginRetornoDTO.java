@@ -1,5 +1,6 @@
 package com.example.demo.provas_online.api.dto;
 
+import com.example.demo.provas_online.types.TipoUsuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,4 +14,5 @@ public class LoginRetornoDTO {
     private String sobrenome;
     private String nomeUsuario;
     private String token;
+    private TipoUsuario tipoUsuario;
 }
