@@ -1,6 +1,7 @@
 package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.DisciplinaJaExisteException;
+import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.repository.DisciplinaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,15 @@ public class DisciplinaService {
 
     public List<Disciplina> obterDisciplinas() {
         return repository.findAll();
+    }
+
+    public Disciplina validarEEditarDisciplina(Disciplina disciplina) throws DisciplinaNaoExisteException {
+        Optional<Disciplina> disciplinaEncontrada = repository.findById(disciplina.getId());
+
+        if(disciplinaEncontrada.isEmpty()) {
+            throw new DisciplinaNaoExisteException();
+        }
+
+        return repository.save(disciplina);
     }
 }
