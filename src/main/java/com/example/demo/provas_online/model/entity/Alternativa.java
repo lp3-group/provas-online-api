@@ -18,8 +18,4 @@ public class Alternativa {
     private String texto;
 
     private boolean respostaCerta;
-
-    @ManyToOne
-    @JoinColumn(name = "questao_id")
-    private Questao questao;
 }
