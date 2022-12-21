@@ -1,6 +1,7 @@
 package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.UsuarioJaExisteException;
+import com.example.demo.provas_online.exception.UsuarioNaoExisteException;
 import com.example.demo.provas_online.model.entity.Administrador;
 import com.example.demo.provas_online.model.entity.Estudante;
 import com.example.demo.provas_online.model.entity.Usuario;
@@ -111,5 +112,30 @@ public class UsuarioService implements UserDetailsService {
 
     public List<Estudante> getEstudantes() {
         return estudanteRepository.findAll();
+    }
+
+    public void validarEExcluirUsuarioPeloId(Integer id) throws UsuarioNaoExisteException {
+        Optional<Usuario> usuario = getUsuarioPeloId(id);
+
+        if(usuario.isEmpty()) {
+            throw new UsuarioNaoExisteException();
+        }
+
+        if(usuario.get() instanceof Administrador) {
+            administradorRepository.delete((Administrador) usuario.get());
+            return;
+        }
+
+        estudanteRepository.delete((Estudante) usuario.get());
+    }
+
+    public Optional getUsuarioPeloId(Integer id) {
+        Optional<Administrador> administrador = administradorRepository.findById(id);
+
+        if(administrador.isPresent()) {
+            return administrador;
+        }
+
+        return estudanteRepository.findById(id);
     }
 }
