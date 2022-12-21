@@ -38,4 +38,14 @@ public class DisciplinaService {
 
         return repository.save(disciplina);
     }
+
+    public void validarEExcluirDisciplina(Integer id) throws DisciplinaNaoExisteException {
+        Optional<Disciplina> disciplinaEncontrada = repository.findById(id);
+
+        if(disciplinaEncontrada.isEmpty()) {
+            throw new DisciplinaNaoExisteException();
+        }
+
+        repository.delete(disciplinaEncontrada.get());
+    }
 }
