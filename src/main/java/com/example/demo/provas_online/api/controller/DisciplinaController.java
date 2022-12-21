@@ -3,6 +3,7 @@ package com.example.demo.provas_online.api.controller;
 import com.example.demo.provas_online.api.dto.CriarDisciplinaDTO;
 import com.example.demo.provas_online.api.dto.DisciplinaDTO;
 import com.example.demo.provas_online.exception.DisciplinaJaExisteException;
+import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.service.DisciplinaService;
 import com.example.demo.provas_online.utility.MapeadorDeListas;
@@ -44,5 +45,23 @@ public class DisciplinaController {
         List<DisciplinaDTO> corpoRetorno = MapeadorDeListas.mapeiaListaParaListaDeDTO(disciplinas, DisciplinaDTO.class);
 
         return ResponseEntity.ok(corpoRetorno);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity editarDisciplina(
+            @PathVariable("id") Integer id, @RequestBody CriarDisciplinaDTO corpoRequisicao
+    ) {
+        try {
+            Disciplina disciplina = modelMapper.map(corpoRequisicao, Disciplina.class);
+            disciplina.setId(id);
+
+            Disciplina disciplinaEditada = service.validarEEditarDisciplina(disciplina);
+
+            DisciplinaDTO retorno = modelMapper.map(disciplinaEditada, DisciplinaDTO.class);
+
+            return ResponseEntity.ok(retorno);
+        } catch (DisciplinaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
