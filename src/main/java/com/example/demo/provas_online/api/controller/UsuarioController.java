@@ -5,6 +5,7 @@ import com.example.demo.provas_online.api.dto.CriarUsuarioDTO;
 import com.example.demo.provas_online.api.dto.EstudanteDTO;
 import com.example.demo.provas_online.api.dto.UsuariosDTO;
 import com.example.demo.provas_online.exception.UsuarioJaExisteException;
+import com.example.demo.provas_online.exception.UsuarioNaoExisteException;
 import com.example.demo.provas_online.model.entity.Administrador;
 import com.example.demo.provas_online.model.entity.Estudante;
 import com.example.demo.provas_online.model.entity.Usuario;
@@ -52,6 +53,17 @@ public class UsuarioController {
         );
 
         return ResponseEntity.ok(retorno);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity excluirUsuario(@PathVariable("id") Integer id) {
+        try {
+            service.validarEExcluirUsuarioPeloId(id);
+
+            return ResponseEntity.noContent().build();
+        } catch (UsuarioNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     private <T, K> List<K> mapeiaListaParaListaDeDTO(List<T> listaOrigem, Class<K> classeDestino) {
