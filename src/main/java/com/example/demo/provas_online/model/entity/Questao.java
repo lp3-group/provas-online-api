@@ -20,10 +20,7 @@ public class Questao {
 
     private Double valor = 0.0;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questao")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "questao_id")
     private List<Alternativa> alternativas;
-
-    @ManyToOne
-    @JoinColumn(name = "prova_id")
-    private Prova prova;
 }
