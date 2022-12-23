@@ -82,6 +82,8 @@ public class ProvaController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (ProvaJaExisteException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (QuestaoInvalidaException | AlternativaInvalidaException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
