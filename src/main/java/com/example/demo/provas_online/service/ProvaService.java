@@ -54,16 +54,6 @@ public class ProvaService {
     }
 
     public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
-        Optional<Prova> prova = obterProvaPeloId(id);
-
-        if(prova.isEmpty()) {
-            throw new ProvaNaoExisteException();
-        }
-
-        return prova.get();
-    }
-
-    public Optional<Prova> obterProvaPeloId(Integer id) {
-        return provaRepository.findById(id);
+        return provaRepository.findById(id).orElseThrow(() -> new ProvaNaoExisteException());
     }
 }
