@@ -13,6 +13,7 @@ public class LoginRetornoDTO {
     private String nome;
     private String sobrenome;
     private String nomeUsuario;
+    private boolean primeiroAcesso;
     private String token;
     private TipoUsuario tipoUsuario;
 }
