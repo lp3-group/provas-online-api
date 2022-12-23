@@ -53,6 +53,35 @@ public class ProvaService {
         provaRepository.delete(prova);
     }
 
+    public Prova validarEAtualizarProva(Prova prova)
+            throws ProvaNaoExisteException, DisciplinaNaoExisteException, ProvaJaExisteException {
+        Prova provaEncontrada = validar(prova);
+
+        Disciplina disciplina =  disciplinaRepository.findById(prova.getDisciplina().getId())
+                .orElseThrow(() -> new DisciplinaNaoExisteException());
+
+        prova.setDisciplina(disciplina);
+        prova.setCriadaEm(provaEncontrada.getCriadaEm());
+
+        return provaRepository.save(prova);
+    }
+
+    private Prova validar(Prova prova)
+            throws ProvaNaoExisteException, ProvaJaExisteException {
+        Prova provaASerEditada = validarEObterProvaPeloId(prova.getId());
+        Optional<Prova> provaEncontrada = provaRepository.findByTitulo(prova.getTitulo());
+
+        if(provaEncontrada.isPresent() && saoProvasDiferentes(prova, provaEncontrada.get())) {
+            throw new ProvaJaExisteException();
+        }
+
+        return provaASerEditada;
+    }
+
+    private boolean saoProvasDiferentes(Prova provaEditada, Prova provaEncontrada) {
+        return !provaEncontrada.getId().equals(provaEditada.getId());
+    }
+
     public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
         return provaRepository.findById(id).orElseThrow(() -> new ProvaNaoExisteException());
     }
