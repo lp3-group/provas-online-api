@@ -83,6 +83,7 @@ public class ProvaService {
     public Prova validarEAtualizarProva(Prova prova)
             throws ProvaNaoExisteException, DisciplinaNaoExisteException, ProvaJaExisteException {
         Prova provaEncontrada = validar(prova);
+        validarQuestoes(prova.getQuestoes());
 
         Disciplina disciplina =  disciplinaRepository.findById(prova.getDisciplina().getId())
                 .orElseThrow(() -> new DisciplinaNaoExisteException());
