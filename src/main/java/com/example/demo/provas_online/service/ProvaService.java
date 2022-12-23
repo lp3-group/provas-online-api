@@ -47,6 +47,12 @@ public class ProvaService {
         return provaRepository.findAll();
     }
 
+    public void validarEExcluirProva(Integer id) throws ProvaNaoExisteException {
+        Prova prova = validarEObterProvaPeloId(id);
+
+        provaRepository.delete(prova);
+    }
+
     public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
         Optional<Prova> prova = obterProvaPeloId(id);
 
