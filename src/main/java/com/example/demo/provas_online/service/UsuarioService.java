@@ -45,7 +45,7 @@ public class UsuarioService implements UserDetailsService {
         salvar(usuario);
     }
 
-    private void salvar(Usuario usuario) {
+    public void salvar(Usuario usuario) {
         if(usuario instanceof Administrador) {
             administradorRepository.save((Administrador) usuario);
             return;
