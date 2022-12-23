@@ -1,5 +1,6 @@
 package com.example.demo.provas_online.api.controller;
 
+import com.example.demo.provas_online.api.dto.ListaProvasDTO;
 import com.example.demo.provas_online.api.dto.NovaProvaDTO;
 import com.example.demo.provas_online.api.dto.ProvaDTO;
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
@@ -47,7 +48,7 @@ public class ProvaController {
     public ResponseEntity listarProvas() {
         List<Prova> provas = service.obterProvas();
 
-        List<ProvaDTO> retorno = MapeadorDeListas.mapeiaListaParaListaDeDTO(provas, ProvaDTO.class);
+        List<ListaProvasDTO> retorno = MapeadorDeListas.mapeiaListaParaListaDeDTO(provas, ListaProvasDTO.class);
 
         return ResponseEntity.ok(retorno);
     }
