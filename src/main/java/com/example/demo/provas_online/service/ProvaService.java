@@ -2,6 +2,7 @@ package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.exception.ProvaJaExisteException;
+import com.example.demo.provas_online.exception.ProvaNaoExisteException;
 import com.example.demo.provas_online.model.entity.Alternativa;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.entity.Prova;
@@ -44,5 +45,19 @@ public class ProvaService {
 
     public List<Prova> obterProvas() {
         return provaRepository.findAll();
+    }
+
+    public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
+        Optional<Prova> prova = obterProvaPeloId(id);
+
+        if(prova.isEmpty()) {
+            throw new ProvaNaoExisteException();
+        }
+
+        return prova.get();
+    }
+
+    public Optional<Prova> obterProvaPeloId(Integer id) {
+        return provaRepository.findById(id);
     }
 }
