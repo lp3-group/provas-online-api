@@ -3,9 +3,7 @@ package com.example.demo.provas_online.api.controller;
 import com.example.demo.provas_online.api.dto.ListaProvasDTO;
 import com.example.demo.provas_online.api.dto.NovaProvaDTO;
 import com.example.demo.provas_online.api.dto.ProvaDTO;
-import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
-import com.example.demo.provas_online.exception.ProvaJaExisteException;
-import com.example.demo.provas_online.exception.ProvaNaoExisteException;
+import com.example.demo.provas_online.exception.*;
 import com.example.demo.provas_online.model.entity.Prova;
 import com.example.demo.provas_online.service.ProvaService;
 import com.example.demo.provas_online.utility.MapeadorDeListas;
@@ -42,6 +40,8 @@ public class ProvaController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (ProvaJaExisteException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        } catch (QuestaoInvalidaException | AlternativaInvalidaException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
