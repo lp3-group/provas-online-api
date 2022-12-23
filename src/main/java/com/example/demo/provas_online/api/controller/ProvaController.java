@@ -66,4 +66,15 @@ public class ProvaController {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity excluirProva(@PathVariable("id") Integer id) {
+        try {
+            service.validarEExcluirProva(id);
+
+            return ResponseEntity.noContent().build();
+        } catch (ProvaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 }
