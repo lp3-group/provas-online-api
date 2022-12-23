@@ -1,10 +1,10 @@
 package com.example.demo.provas_online.service;
 
-import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
-import com.example.demo.provas_online.exception.ProvaJaExisteException;
-import com.example.demo.provas_online.exception.ProvaNaoExisteException;
+import com.example.demo.provas_online.exception.*;
+import com.example.demo.provas_online.model.entity.Alternativa;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.entity.Prova;
+import com.example.demo.provas_online.model.entity.Questao;
 import com.example.demo.provas_online.model.repository.DisciplinaRepository;
 import com.example.demo.provas_online.model.repository.ProvaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,8 @@ public class ProvaService {
     @Autowired
     private DisciplinaRepository disciplinaRepository;
 
-    public Prova validarECriarProva(Prova prova) throws DisciplinaNaoExisteException, ProvaJaExisteException {
+    public Prova validarECriarProva(Prova prova) throws DisciplinaNaoExisteException, ProvaJaExisteException,
+            QuestaoInvalidaException, AlternativaInvalidaException {
         Optional<Disciplina> disciplina = disciplinaRepository.findById(prova.getDisciplina().getId());
         Optional<Prova> provas = provaRepository.findByTitulo(prova.getTitulo());
 
@@ -34,11 +35,39 @@ public class ProvaService {
             throw new ProvaJaExisteException();
         }
 
+        validarQuestoes(prova.getQuestoes());
+
         prova.setId(null);
         prova.setCriadaEm(new Date());
         prova.setDisciplina(disciplina.get());
 
         return provaRepository.save(prova);
+    }
+
+    private void validarQuestoes(List<Questao> questoes) throws QuestaoInvalidaException, AlternativaInvalidaException {
+        if(questoes.isEmpty() || questoes == null) {
+            throw new QuestaoInvalidaException("A prova precisa ter pelo menos uma questão!");
+        }
+
+        questoes.forEach(questao -> {
+            validarAlternativas(questao.getAlternativas());
+        });
+    }
+
+    private void validarAlternativas(List<Alternativa> alternativas) throws AlternativaInvalidaException {
+        int QUANTIDADE_MINIMA_ALTERNATIVAS = 2;
+        int QUANTIDADE_EXATA_ALTERNATIVAS_CERTAS = 1;
+
+        if(alternativas.isEmpty() || alternativas == null || alternativas.size() < QUANTIDADE_MINIMA_ALTERNATIVAS) {
+            throw new AlternativaInvalidaException("Cada questão deve ter pelo menos duas alternativas!");
+        }
+
+        int quantidadeAlternativasCertas = (int) alternativas.stream()
+                .filter(alternativa -> alternativa.isRespostaCerta()).count();
+
+        if(quantidadeAlternativasCertas != QUANTIDADE_EXATA_ALTERNATIVAS_CERTAS) {
+            throw new AlternativaInvalidaException("Cada questão deve ter somente uma alternativa certa!");
+        }
     }
 
     public List<Prova> obterProvas() {
