@@ -2,6 +2,7 @@ package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.api.dto.LoginDTO;
 import com.example.demo.provas_online.exception.SenhaInvalidaException;
+import com.example.demo.provas_online.exception.UsuarioNaoExisteException;
 import com.example.demo.provas_online.model.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,5 +36,26 @@ public class AuthService {
         }
 
         return usuario.get();
+    }
+
+    public void validarSenha(String senha, String confirmaSenha) throws SenhaInvalidaException {
+        if(!senha.equals(confirmaSenha)) {
+            throw new SenhaInvalidaException("As senhas não coincidem!");
+        }
+    }
+
+    public void alterarSenha(String nomeUsuario, String senha) throws UsuarioNaoExisteException {
+        Optional<Usuario> usuarioOptional = usuarioService.getUsuario(nomeUsuario);
+
+        if(usuarioOptional.isEmpty()) {
+            throw new UsuarioNaoExisteException();
+        }
+
+        Usuario usuario = usuarioOptional.get();
+
+        String novaSenha = encoder.encode(senha);
+        usuario.setSenha(novaSenha);
+        usuario.setPrimeiroAcesso(false);
+        usuarioService.salvar(usuario);
     }
 }
