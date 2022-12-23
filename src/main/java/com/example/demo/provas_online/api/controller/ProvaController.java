@@ -67,6 +67,24 @@ public class ProvaController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity atualizarProva(@PathVariable("id") Integer id, @RequestBody NovaProvaDTO corpoRequisicao) {
+        try {
+            Prova prova = modelMapper.map(corpoRequisicao, Prova.class);
+            prova.setId(id);
+
+            Prova provaEditada = service.validarEAtualizarProva(prova);
+
+            ProvaDTO retorno = modelMapper.map(provaEditada, ProvaDTO.class);
+
+            return ResponseEntity.ok(retorno);
+        } catch (ProvaNaoExisteException | DisciplinaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (ProvaJaExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity excluirProva(@PathVariable("id") Integer id) {
         try {
