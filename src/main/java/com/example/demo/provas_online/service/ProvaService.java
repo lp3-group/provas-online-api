@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -114,6 +115,18 @@ public class ProvaService {
 
     private boolean saoProvasDiferentes(Prova provaEditada, Prova provaEncontrada) {
         return !provaEncontrada.getId().equals(provaEditada.getId());
+    }
+
+    public Prova validarEObterProvaRandomizada(Integer id) throws ProvaNaoExisteException {
+        Prova prova = validarEObterProvaPeloId(id);
+
+        prova.getQuestoes().forEach(questao -> {
+            Collections.shuffle(questao.getAlternativas());
+        });
+
+        Collections.shuffle(prova.getQuestoes());
+
+        return prova;
     }
 
     public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
