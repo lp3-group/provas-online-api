@@ -1,6 +1,7 @@
 package com.example.demo.provas_online.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class ProvaRealizada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
