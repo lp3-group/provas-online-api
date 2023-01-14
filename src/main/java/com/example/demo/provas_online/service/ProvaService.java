@@ -1,14 +1,14 @@
 package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.*;
-import com.example.demo.provas_online.model.entity.Alternativa;
-import com.example.demo.provas_online.model.entity.Disciplina;
-import com.example.demo.provas_online.model.entity.Prova;
-import com.example.demo.provas_online.model.entity.Questao;
+import com.example.demo.provas_online.model.entity.*;
+import com.example.demo.provas_online.model.repository.AlternativaRepository;
 import com.example.demo.provas_online.model.repository.DisciplinaRepository;
+import com.example.demo.provas_online.model.repository.ProvaRealizadaRepository;
 import com.example.demo.provas_online.model.repository.ProvaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +21,12 @@ public class ProvaService {
 
     @Autowired
     private DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private AlternativaRepository alternativaRepository;
+
+    @Autowired
+    private ProvaRealizadaRepository provaRealizadaRepository;
 
     public Prova validarECriarProva(Prova prova) throws DisciplinaNaoExisteException, ProvaJaExisteException,
             QuestaoInvalidaException, AlternativaInvalidaException {
@@ -112,5 +118,33 @@ public class ProvaService {
 
     public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
         return provaRepository.findById(id).orElseThrow(() -> new ProvaNaoExisteException());
+    }
+
+    public ProvaRealizada realizarProva(Estudante estudante, Prova prova, List<Integer> idsAlternativas) {
+        List<Alternativa> alternativas = getAlternativasPeloId(idsAlternativas);
+
+        ProvaRealizada provaRealizada = ProvaRealizada.builder()
+                .realizadaEm(new Date())
+                .estudante(estudante)
+                .prova(prova)
+                .alternativasMarcadas(alternativas)
+                .build();
+
+        return provaRealizadaRepository.save(provaRealizada);
+    }
+
+    @Transactional
+    private List<Alternativa> getAlternativasPeloId(List<Integer> idsAlternativas) {
+        return alternativaRepository.findAllById(idsAlternativas);
+    }
+
+    public double calcularNota(List<Alternativa> alternativasMarcadas) {
+        return filtrarQuestoesCertas(alternativasMarcadas).stream().mapToDouble(
+                alternativa -> alternativa.getQuestao().getValor()
+        ).sum();
+    }
+
+    public List<Alternativa> filtrarQuestoesCertas(List<Alternativa> alternativasMarcadas) {
+        return alternativasMarcadas.stream().filter(Alternativa::isRespostaCerta).toList();
     }
 }
