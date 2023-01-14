@@ -1,20 +1,25 @@
 package com.example.demo.provas_online.api.controller;
 
-import com.example.demo.provas_online.api.dto.ListaProvasDTO;
-import com.example.demo.provas_online.api.dto.NovaProvaDTO;
-import com.example.demo.provas_online.api.dto.ProvaDTO;
+import com.example.demo.provas_online.api.dto.*;
 import com.example.demo.provas_online.exception.*;
-import com.example.demo.provas_online.model.entity.Prova;
+import com.example.demo.provas_online.model.entity.*;
+import com.example.demo.provas_online.service.AlternativaService;
 import com.example.demo.provas_online.service.ProvaService;
+import com.example.demo.provas_online.service.UsuarioService;
 import com.example.demo.provas_online.utility.MapeadorDeListas;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/provas")
@@ -25,6 +30,12 @@ public class ProvaController {
 
     @Autowired
     private ProvaService service;
+
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private AlternativaService alternativaService;
 
     @PostMapping()
     public ResponseEntity criarProva(@RequestBody NovaProvaDTO corpoRequisicao) {
@@ -93,6 +104,49 @@ public class ProvaController {
             service.validarEExcluirProva(id);
 
             return ResponseEntity.noContent().build();
+        } catch (ProvaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{id}/realizar")
+    public ResponseEntity realizarProva(
+            @PathVariable("id") Integer id,
+            @RequestBody List<IdAlternativaDTO> idsAlternativasMarcadas,
+            Authentication authentication
+    ) {
+        try {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            Estudante estudante = (Estudante) usuarioService.getUsuario(userDetails.getUsername()).get();
+
+            Prova prova = service.validarEObterProvaPeloId(id);
+
+            List<Integer> idsAlternativas = idsAlternativasMarcadas.stream().map(IdAlternativaDTO::getId)
+                    .toList();
+
+            ProvaRealizada provaRealizada = service.realizarProva(estudante, prova, idsAlternativas);
+            double nota = service.calcularNota(provaRealizada.getAlternativasMarcadas());
+            int quantidadeQuestoes = service.filtrarQuestoesCertas(provaRealizada.getAlternativasMarcadas()).size();
+
+            List<QuestaoRealizadaDTO> questoesRespondidas = provaRealizada.getAlternativasMarcadas()
+                    .stream().map(alternativa ->
+                            QuestaoRealizadaDTO.builder()
+                                .id(alternativa.getQuestao().getId())
+                                .texto(alternativa.getQuestao().getTexto())
+                                .valor(alternativa.getQuestao().getValor())
+                                .alternativaMarcada(modelMapper.map(alternativa, AlternativaDTO.class))
+                                .build()
+                    ).toList();
+
+            ProvaRealizadaDTO retorno = ProvaRealizadaDTO.builder()
+                    .id(provaRealizada.getId())
+                    .realizadaEm(provaRealizada.getRealizadaEm())
+                    .nota(nota)
+                    .respostasCertas(quantidadeQuestoes)
+                    .questoes(questoesRespondidas)
+                    .build();
+
+            return ResponseEntity.ok(retorno);
         } catch (ProvaNaoExisteException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
