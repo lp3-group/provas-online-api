@@ -109,6 +109,19 @@ public class ProvaController {
         }
     }
 
+    @GetMapping("/{id}/realizar")
+    public ResponseEntity pegarProvaParaRealizar(@PathVariable("id") Integer id) {
+        try {
+            Prova prova = service.validarEObterProvaRandomizada(id);
+
+            ProvaDTO retorno = modelMapper.map(prova, ProvaDTO.class);
+
+            return ResponseEntity.ok(retorno);
+        } catch (ProvaNaoExisteException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("/{id}/realizar")
     public ResponseEntity realizarProva(
             @PathVariable("id") Integer id,
