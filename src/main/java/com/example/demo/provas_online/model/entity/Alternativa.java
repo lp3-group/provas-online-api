@@ -18,4 +18,7 @@ public class Alternativa {
     private String texto;
 
     private boolean respostaCerta;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Questao questao;
 }
