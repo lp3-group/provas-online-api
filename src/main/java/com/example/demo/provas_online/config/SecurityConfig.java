@@ -1,7 +1,6 @@
 package com.example.demo.provas_online.config;
 
 import com.example.demo.provas_online.security.JwtAuthFilter;
-import com.example.demo.provas_online.service.AuthService;
 import com.example.demo.provas_online.service.JwtService;
 import com.example.demo.provas_online.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +10,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -53,6 +50,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasRole("ADMIN")
                 .antMatchers("/api/v1/disciplinas", "/api/v1/disciplinas/**")
                 .hasRole("ADMIN")
+                .regexMatchers("/api/v1/provas/[0-9]+/realizar")
+                .not().hasRole("ADMIN")
                 .antMatchers("/api/v1/provas", "/api/v1/provas/**")
                 .hasRole("ADMIN")
                 .antMatchers("/api/v1/auth/alterarSenha")
