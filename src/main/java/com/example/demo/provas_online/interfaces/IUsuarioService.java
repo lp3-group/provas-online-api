@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Optional;
 
 public interface IUsuarioService {
-    public Optional<Usuario> getUsuario(String nomeUsuario);
+    public Optional getUsuario(String nomeUsuario);
     public UserDetails loadUserByUsername(String username);
     public void salvar(Usuario usuario);
 }
