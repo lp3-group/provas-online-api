@@ -2,6 +2,7 @@ package com.example.demo.provas_online.service;
 
 import com.example.demo.provas_online.exception.UsuarioJaExisteException;
 import com.example.demo.provas_online.exception.UsuarioNaoExisteException;
+import com.example.demo.provas_online.interfaces.IUsuarioService;
 import com.example.demo.provas_online.model.entity.Administrador;
 import com.example.demo.provas_online.model.entity.Estudante;
 import com.example.demo.provas_online.model.entity.Usuario;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UsuarioService implements UserDetailsService {
+public class UsuarioService implements UserDetailsService, IUsuarioService {
     @Autowired
     private PasswordEncoder encoder;
 
