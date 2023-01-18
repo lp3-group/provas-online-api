@@ -18,7 +18,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder encoder;
 
-    public Usuario autenticar(LoginDTO credenciais, IUsuarioService usuarioService) throws IllegalArgumentException, UsernameNotFoundException, SenhaInvalidaException {
+    public Usuario autenticar(LoginDTO credenciais, IUsuarioService usuarioService, PasswordEncoder encoder) throws IllegalArgumentException, UsernameNotFoundException, SenhaInvalidaException {
         Optional<Usuario> usuario = usuarioService.getUsuario(credenciais.getNomeUsuario());
 
         if(usuario.isEmpty()) {
@@ -42,7 +42,7 @@ public class AuthService {
         }
     }
 
-    public void alterarSenha(String nomeUsuario, String senha, IUsuarioService usuarioService) throws UsuarioNaoExisteException {
+    public void alterarSenha(String nomeUsuario, String senha, IUsuarioService usuarioService, PasswordEncoder encoder) throws UsuarioNaoExisteException {
         Optional<Usuario> usuarioOptional = usuarioService.getUsuario(nomeUsuario);
 
         if(usuarioOptional.isEmpty()) {
