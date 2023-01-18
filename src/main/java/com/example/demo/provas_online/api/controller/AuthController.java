@@ -8,6 +8,7 @@ import com.example.demo.provas_online.model.entity.Administrador;
 import com.example.demo.provas_online.model.entity.Usuario;
 import com.example.demo.provas_online.service.AuthService;
 import com.example.demo.provas_online.service.JwtService;
+import com.example.demo.provas_online.service.UsuarioService;
 import com.example.demo.provas_online.types.TipoUsuario;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,10 +30,13 @@ public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @PostMapping("/login")
     public ResponseEntity autenticar(@RequestBody LoginDTO credenciais) {
         try {
-            Usuario usuario = authService.autenticar(credenciais);
+            Usuario usuario = authService.autenticar(credenciais, usuarioService);
             String token = jwtService.gerarToken(usuario);
 
             LoginRetornoDTO retorno = modelMapper.map(usuario, LoginRetornoDTO.class);
@@ -53,7 +57,7 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         try {
             authService.validarSenha(corpoRequisicao.getSenha(), corpoRequisicao.getConfirmaSenha());
-            authService.alterarSenha(userDetails.getUsername(), corpoRequisicao.getSenha());
+            authService.alterarSenha(userDetails.getUsername(), corpoRequisicao.getSenha(), usuarioService);
 
             return ResponseEntity.noContent().build();
         } catch (SenhaInvalidaException e) {
