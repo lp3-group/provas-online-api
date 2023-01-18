@@ -3,6 +3,7 @@ package com.example.demo.provas_online.service;
 import com.example.demo.provas_online.api.dto.LoginDTO;
 import com.example.demo.provas_online.exception.SenhaInvalidaException;
 import com.example.demo.provas_online.exception.UsuarioNaoExisteException;
+import com.example.demo.provas_online.interfaces.IUsuarioService;
 import com.example.demo.provas_online.model.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,10 +18,7 @@ public class AuthService {
     @Autowired
     private PasswordEncoder encoder;
 
-    @Autowired
-    private UsuarioService usuarioService;
-
-    public Usuario autenticar(LoginDTO credenciais) throws IllegalArgumentException, UsernameNotFoundException, SenhaInvalidaException {
+    public Usuario autenticar(LoginDTO credenciais, IUsuarioService usuarioService) throws IllegalArgumentException, UsernameNotFoundException, SenhaInvalidaException {
         Optional<Usuario> usuario = usuarioService.getUsuario(credenciais.getNomeUsuario());
 
         if(usuario.isEmpty()) {
@@ -44,7 +42,7 @@ public class AuthService {
         }
     }
 
-    public void alterarSenha(String nomeUsuario, String senha) throws UsuarioNaoExisteException {
+    public void alterarSenha(String nomeUsuario, String senha, IUsuarioService usuarioService) throws UsuarioNaoExisteException {
         Optional<Usuario> usuarioOptional = usuarioService.getUsuario(nomeUsuario);
 
         if(usuarioOptional.isEmpty()) {
