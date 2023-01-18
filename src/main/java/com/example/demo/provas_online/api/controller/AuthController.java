@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,10 +34,13 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private PasswordEncoder encoder;
+
     @PostMapping("/login")
     public ResponseEntity autenticar(@RequestBody LoginDTO credenciais) {
         try {
-            Usuario usuario = authService.autenticar(credenciais, usuarioService);
+            Usuario usuario = authService.autenticar(credenciais, usuarioService, encoder);
             String token = jwtService.gerarToken(usuario);
 
             LoginRetornoDTO retorno = modelMapper.map(usuario, LoginRetornoDTO.class);
@@ -57,7 +61,7 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         try {
             authService.validarSenha(corpoRequisicao.getSenha(), corpoRequisicao.getConfirmaSenha());
-            authService.alterarSenha(userDetails.getUsername(), corpoRequisicao.getSenha(), usuarioService);
+            authService.alterarSenha(userDetails.getUsername(), corpoRequisicao.getSenha(), usuarioService, encoder);
 
             return ResponseEntity.noContent().build();
         } catch (SenhaInvalidaException e) {
