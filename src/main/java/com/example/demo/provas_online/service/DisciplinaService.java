@@ -29,7 +29,7 @@ public class DisciplinaService {
         return repository.findAll();
     }
 
-    public Disciplina validarEEditarDisciplina(Disciplina disciplina) throws DisciplinaNaoExisteException {
+    public Disciplina validarEEditarDisciplina(Disciplina disciplina, DisciplinaRepository repository) throws DisciplinaNaoExisteException {
         Optional<Disciplina> disciplinaEncontrada = repository.findById(disciplina.getId());
 
         if(disciplinaEncontrada.isEmpty()) {
