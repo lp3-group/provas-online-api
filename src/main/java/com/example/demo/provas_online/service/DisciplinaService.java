@@ -15,7 +15,7 @@ public class DisciplinaService {
     @Autowired
     private DisciplinaRepository repository;
 
-    public void validarECriarDisciplina(Disciplina disciplina) throws DisciplinaJaExisteException {
+    public void validarECriarDisciplina(Disciplina disciplina, DisciplinaRepository repository) throws DisciplinaJaExisteException {
         Optional<Disciplina> disciplinaEncontrada = repository.findByNome(disciplina.getNome());
 
         if(disciplinaEncontrada.isPresent()) {
