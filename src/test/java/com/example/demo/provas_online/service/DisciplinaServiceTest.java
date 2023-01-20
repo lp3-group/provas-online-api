@@ -4,6 +4,7 @@ import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.demo.provas_online.exception.DisciplinaJaExisteException;
+import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.repository.DisciplinaRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,7 +27,7 @@ public class DisciplinaServiceTest {
     @Test
     public void testaDisciplinaEncontrada() {
         DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
-        expect(repositoryMock.findByNome(new String())).andReturn(Optional.ofNullable(new Disciplina()));
+        expect(repositoryMock.findByNome(anyObject())).andReturn(Optional.ofNullable(new Disciplina()));
         replay(repositoryMock);
 
         try {
@@ -58,5 +59,19 @@ public class DisciplinaServiceTest {
         List<Disciplina> retorno = this.disciplinaService.obterDisciplinas(repositoryMock);
 
         assertInstanceOf(List.class, retorno);
+    }
+
+    @Test
+    public void testaDisciplinaNaoEncontradaAoEditar() {
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findById(anyObject())).andReturn(Optional.ofNullable(null));
+        replay(repositoryMock);
+
+        try {
+            this.disciplinaService.validarEEditarDisciplina(new Disciplina(), repositoryMock);
+            fail();
+        } catch (DisciplinaNaoExisteException e) {
+            assertEquals("Disciplina não encontrada!", e.getMessage());
+        }
     }
 }
