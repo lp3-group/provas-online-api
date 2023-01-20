@@ -34,4 +34,16 @@ public class DisciplinaServiceTest {
             assertEquals("Esta disciplina já existe!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaDisciplinaCriada() {
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findByNome(anyObject())).andReturn(Optional.ofNullable(null));
+        expect(repositoryMock.save(anyObject())).andReturn(Disciplina.class);
+        replay(repositoryMock);
+
+        this.disciplinaService.validarECriarDisciplina(new Disciplina(), repositoryMock);
+
+        verify(repositoryMock);
+    }
 }
