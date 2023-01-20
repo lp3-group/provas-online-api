@@ -44,7 +44,7 @@ public class DisciplinaController {
 
     @GetMapping()
     public ResponseEntity obterDisciplinas() {
-        List<Disciplina> disciplinas = service.obterDisciplinas();
+        List<Disciplina> disciplinas = service.obterDisciplinas(disciplinaRepository);
 
         List<DisciplinaDTO> corpoRetorno = MapeadorDeListas.mapeiaListaParaListaDeDTO(disciplinas, DisciplinaDTO.class);
 
