@@ -72,7 +72,7 @@ public class DisciplinaController {
     @DeleteMapping("/{id}")
     public ResponseEntity excluirDisciplina(@PathVariable("id") Integer id) {
         try {
-            service.validarEExcluirDisciplina(id);
+            service.validarEExcluirDisciplina(id, disciplinaRepository);
 
             return ResponseEntity.noContent().build();
         } catch (DisciplinaNaoExisteException e) {
