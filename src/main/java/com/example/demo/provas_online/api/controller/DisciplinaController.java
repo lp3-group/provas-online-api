@@ -5,6 +5,7 @@ import com.example.demo.provas_online.api.dto.DisciplinaDTO;
 import com.example.demo.provas_online.exception.DisciplinaJaExisteException;
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.model.entity.Disciplina;
+import com.example.demo.provas_online.model.repository.DisciplinaRepository;
 import com.example.demo.provas_online.service.DisciplinaService;
 import com.example.demo.provas_online.utility.MapeadorDeListas;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,9 @@ public class DisciplinaController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private DisciplinaRepository disciplinaRepository;
+
     private final DisciplinaService service;
 
     @PostMapping()
@@ -30,7 +34,7 @@ public class DisciplinaController {
         try {
             Disciplina disciplina = modelMapper.map(corpoRequisicao, Disciplina.class);
 
-            service.validarECriarDisciplina(disciplina);
+            service.validarECriarDisciplina(disciplina, disciplinaRepository);
 
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (DisciplinaJaExisteException e) {
