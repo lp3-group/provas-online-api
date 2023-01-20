@@ -88,4 +88,18 @@ public class DisciplinaServiceTest {
 
         assertEquals(disciplinaTeste, retorno);
     }
+
+    @Test
+    public void testaDisciplinaNaoEncontradaAoExcluir() {
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findById(anyObject())).andReturn(Optional.ofNullable(null));
+        replay(repositoryMock);
+
+        try {
+            this.disciplinaService.validarEExcluirDisciplina(anyObject(), repositoryMock);
+            fail();
+        } catch (DisciplinaNaoExisteException e) {
+            assertEquals("Disciplina não encontrada!", e.getMessage());
+        }
+    }
 }
