@@ -77,11 +77,12 @@ public class DisciplinaServiceTest {
 
     @Test
     public void testaSalvarDisciplinaEditada() {
+        Optional<Disciplina> nullableDisciplina = Optional.ofNullable(new Disciplina());
         Disciplina disciplinaTeste = new Disciplina(null, new String(), null);
 
         DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
-        expect(repositoryMock.findById(anyObject())).andReturn(Optional.ofNullable(new Disciplina()));
-        expect(repositoryMock.save(anyObject())).andReturn(disciplinaTeste);
+        expect(repositoryMock.findById(nullableDisciplina.get().getId())).andReturn(nullableDisciplina);
+        expect(repositoryMock.save(nullableDisciplina.get())).andReturn(disciplinaTeste);
         replay(repositoryMock);
 
         Disciplina retorno = this.disciplinaService.validarEEditarDisciplina(new Disciplina(), repositoryMock);
