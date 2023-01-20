@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -45,5 +47,16 @@ public class DisciplinaServiceTest {
         this.disciplinaService.validarECriarDisciplina(new Disciplina(), repositoryMock);
 
         verify(repositoryMock);
+    }
+
+    @Test
+    public void testaObterDisciplinas() {
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findAll()).andReturn(new ArrayList<Disciplina>());
+        replay(repositoryMock);
+
+        List<Disciplina> retorno = this.disciplinaService.obterDisciplinas(repositoryMock);
+
+        assertInstanceOf(List.class, retorno);
     }
 }
