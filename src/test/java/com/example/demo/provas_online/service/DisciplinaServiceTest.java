@@ -74,4 +74,18 @@ public class DisciplinaServiceTest {
             assertEquals("Disciplina não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaSalvarDisciplinaEditada() {
+        Disciplina disciplinaTeste = new Disciplina(null, new String(), null);
+
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findById(anyObject())).andReturn(Optional.ofNullable(new Disciplina()));
+        expect(repositoryMock.save(anyObject())).andReturn(disciplinaTeste);
+        replay(repositoryMock);
+
+        Disciplina retorno = this.disciplinaService.validarEEditarDisciplina(new Disciplina(), repositoryMock);
+
+        assertEquals(disciplinaTeste, retorno);
+    }
 }
