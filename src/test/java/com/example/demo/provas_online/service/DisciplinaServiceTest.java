@@ -103,4 +103,19 @@ public class DisciplinaServiceTest {
             assertEquals("Disciplina não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaExcluirDisciplina() {
+        Optional<Disciplina> nullableDisciplina = Optional.ofNullable(new Disciplina());
+
+        DisciplinaRepository repositoryMock = createMock(DisciplinaRepository.class);
+        expect(repositoryMock.findById(nullableDisciplina.get().getId())).andReturn(nullableDisciplina);
+        repositoryMock.delete(nullableDisciplina.get());
+        expectLastCall().once();
+        replay(repositoryMock);
+
+        this.disciplinaService.validarEExcluirDisciplina(nullableDisciplina.get().getId(), repositoryMock);
+
+        verify(repositoryMock);
+    }
 }
