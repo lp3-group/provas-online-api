@@ -39,7 +39,7 @@ public class DisciplinaService {
         return repository.save(disciplina);
     }
 
-    public void validarEExcluirDisciplina(Integer id) throws DisciplinaNaoExisteException {
+    public void validarEExcluirDisciplina(Integer id, DisciplinaRepository repository) throws DisciplinaNaoExisteException {
         Optional<Disciplina> disciplinaEncontrada = repository.findById(id);
 
         if(disciplinaEncontrada.isEmpty()) {
