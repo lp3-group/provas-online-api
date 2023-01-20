@@ -25,7 +25,7 @@ public class DisciplinaService {
         repository.save(disciplina);
     }
 
-    public List<Disciplina> obterDisciplinas() {
+    public List<Disciplina> obterDisciplinas(DisciplinaRepository repository) {
         return repository.findAll();
     }
 
