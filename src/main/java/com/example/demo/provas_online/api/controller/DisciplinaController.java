@@ -59,7 +59,7 @@ public class DisciplinaController {
             Disciplina disciplina = modelMapper.map(corpoRequisicao, Disciplina.class);
             disciplina.setId(id);
 
-            Disciplina disciplinaEditada = service.validarEEditarDisciplina(disciplina);
+            Disciplina disciplinaEditada = service.validarEEditarDisciplina(disciplina, disciplinaRepository);
 
             DisciplinaDTO retorno = modelMapper.map(disciplinaEditada, DisciplinaDTO.class);
 
