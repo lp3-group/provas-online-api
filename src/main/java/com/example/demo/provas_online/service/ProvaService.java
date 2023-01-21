@@ -77,7 +77,7 @@ public class ProvaService {
         }
     }
 
-    public List<Prova> obterProvas() {
+    public List<Prova> obterProvas(ProvaRepository provaRepository) {
         return provaRepository.findAll();
     }
 
