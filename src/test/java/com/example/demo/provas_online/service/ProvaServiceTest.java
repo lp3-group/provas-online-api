@@ -204,4 +204,17 @@ public class ProvaServiceTest {
 
         assertEquals(provaTeste, retorno);
     }
+
+    @Test
+    public void testaObterProvas() {
+        List<Prova> listaProvas = new ArrayList<>();
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findAll()).andReturn(listaProvas);
+        replay(provaRepositoryMock);
+
+        List<Prova> retorno = this.provaService.obterProvas(provaRepositoryMock);
+
+        assertEquals(listaProvas, retorno);
+    }
 }
