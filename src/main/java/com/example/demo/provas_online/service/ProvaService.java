@@ -29,7 +29,7 @@ public class ProvaService {
     @Autowired
     private ProvaRealizadaRepository provaRealizadaRepository;
 
-    public Prova validarECriarProva(Prova prova) throws DisciplinaNaoExisteException, ProvaJaExisteException,
+    public Prova validarECriarProva(Prova prova, DisciplinaRepository disciplinaRepository, ProvaRepository provaRepository) throws DisciplinaNaoExisteException, ProvaJaExisteException,
             QuestaoInvalidaException, AlternativaInvalidaException {
         Optional<Disciplina> disciplina = disciplinaRepository.findById(prova.getDisciplina().getId());
         Optional<Prova> provas = provaRepository.findByTitulo(prova.getTitulo());
