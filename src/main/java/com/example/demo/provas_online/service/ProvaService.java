@@ -65,7 +65,7 @@ public class ProvaService {
         int QUANTIDADE_MINIMA_ALTERNATIVAS = 2;
         int QUANTIDADE_EXATA_ALTERNATIVAS_CERTAS = 1;
 
-        if(alternativas.isEmpty() || alternativas == null || alternativas.size() < QUANTIDADE_MINIMA_ALTERNATIVAS) {
+        if(alternativas == null || alternativas.isEmpty() || alternativas.size() < QUANTIDADE_MINIMA_ALTERNATIVAS) {
             throw new AlternativaInvalidaException("Cada questão deve ter pelo menos duas alternativas!");
         }
 
