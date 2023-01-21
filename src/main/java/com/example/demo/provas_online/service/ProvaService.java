@@ -52,7 +52,7 @@ public class ProvaService {
     }
 
     private void validarQuestoes(List<Questao> questoes) throws QuestaoInvalidaException, AlternativaInvalidaException {
-        if(questoes.isEmpty() || questoes == null) {
+        if(questoes == null || questoes.isEmpty()) {
             throw new QuestaoInvalidaException("A prova precisa ter pelo menos uma questão!");
         }
 
