@@ -59,7 +59,7 @@ public class ProvaController {
 
     @GetMapping()
     public ResponseEntity listarProvas() {
-        List<Prova> provas = service.obterProvas();
+        List<Prova> provas = service.obterProvas(provaRepository);
 
         List<ListaProvasDTO> retorno = MapeadorDeListas.mapeiaListaParaListaDeDTO(provas, ListaProvasDTO.class);
 
