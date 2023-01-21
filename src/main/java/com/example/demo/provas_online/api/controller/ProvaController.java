@@ -3,12 +3,12 @@ package com.example.demo.provas_online.api.controller;
 import com.example.demo.provas_online.api.dto.*;
 import com.example.demo.provas_online.exception.*;
 import com.example.demo.provas_online.model.entity.*;
-import com.example.demo.provas_online.service.AlternativaService;
+import com.example.demo.provas_online.model.repository.DisciplinaRepository;
+import com.example.demo.provas_online.model.repository.ProvaRepository;
 import com.example.demo.provas_online.service.ProvaService;
 import com.example.demo.provas_online.service.UsuarioService;
 import com.example.demo.provas_online.utility.MapeadorDeListas;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/provas")
@@ -35,14 +33,17 @@ public class ProvaController {
     private UsuarioService usuarioService;
 
     @Autowired
-    private AlternativaService alternativaService;
+    private DisciplinaRepository disciplinaRepository;
+
+    @Autowired
+    private ProvaRepository provaRepository;
 
     @PostMapping()
     public ResponseEntity criarProva(@RequestBody NovaProvaDTO corpoRequisicao) {
         try {
             Prova prova = modelMapper.map(corpoRequisicao, Prova.class);
 
-            Prova provaCriada = service.validarECriarProva(prova);
+            Prova provaCriada = service.validarECriarProva(prova, disciplinaRepository, provaRepository);
 
             ProvaDTO retorno = modelMapper.map(provaCriada, ProvaDTO.class);
 
