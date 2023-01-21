@@ -3,6 +3,7 @@ package com.example.demo.provas_online.service;
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.example.demo.provas_online.exception.AlternativaInvalidaException;
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.exception.ProvaJaExisteException;
 import com.example.demo.provas_online.exception.QuestaoInvalidaException;
@@ -96,6 +97,35 @@ public class ProvaServiceTest {
             fail();
         } catch (QuestaoInvalidaException e) {
             assertEquals("A prova precisa ter pelo menos uma questão!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testaMenosDeDuasAlternativas() {
+        Disciplina disciplinaTeste = new Disciplina();
+        disciplinaTeste.setId(anyInt());
+
+        Questao questaoTeste = new Questao();
+        List<Questao> questoesTeste = new ArrayList<Questao>();
+        questoesTeste.add(questaoTeste);
+
+        Prova provaTeste = new Prova();
+        provaTeste.setDisciplina(disciplinaTeste);
+        provaTeste.setQuestoes(questoesTeste);
+
+        DisciplinaRepository disciplinaRepositoryMock = createMock(DisciplinaRepository.class);
+        expect(disciplinaRepositoryMock.findById(provaTeste.getDisciplina().getId())).andReturn(Optional.ofNullable(disciplinaTeste));
+        replay(disciplinaRepositoryMock);
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findByTitulo(provaTeste.getTitulo())).andReturn(Optional.ofNullable(null));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarECriarProva(provaTeste, disciplinaRepositoryMock, provaRepositoryMock);
+            fail();
+        } catch (AlternativaInvalidaException e) {
+            assertEquals("Cada questão deve ter pelo menos duas alternativas!", e.getMessage());
         }
     }
 
