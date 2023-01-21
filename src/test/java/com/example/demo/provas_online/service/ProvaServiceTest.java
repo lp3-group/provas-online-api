@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
 import com.example.demo.provas_online.exception.ProvaJaExisteException;
+import com.example.demo.provas_online.exception.QuestaoInvalidaException;
 import com.example.demo.provas_online.model.entity.Alternativa;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.entity.Prova;
@@ -71,6 +72,30 @@ public class ProvaServiceTest {
             fail();
         } catch (ProvaJaExisteException e) {
             assertEquals("Esta prova já existe!", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testaQuestaoInvalidaAoValidar() {
+        Disciplina disciplinaTeste = new Disciplina();
+        disciplinaTeste.setId(anyInt());
+
+        Prova provaTeste = new Prova();
+        provaTeste.setDisciplina(disciplinaTeste);
+
+        DisciplinaRepository disciplinaRepositoryMock = createMock(DisciplinaRepository.class);
+        expect(disciplinaRepositoryMock.findById(provaTeste.getDisciplina().getId())).andReturn(Optional.ofNullable(disciplinaTeste));
+        replay(disciplinaRepositoryMock);
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findByTitulo(provaTeste.getTitulo())).andReturn(Optional.ofNullable(null));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarECriarProva(provaTeste, disciplinaRepositoryMock, provaRepositoryMock);
+            fail();
+        } catch (QuestaoInvalidaException e) {
+            assertEquals("A prova precisa ter pelo menos uma questão!", e.getMessage());
         }
     }
 
