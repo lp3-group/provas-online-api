@@ -130,6 +130,45 @@ public class ProvaServiceTest {
     }
 
     @Test
+    public void testaMaisDeUmaAlternativaCerta() {
+        Disciplina disciplinaTeste = new Disciplina();
+        disciplinaTeste.setId(anyInt());
+
+        Alternativa alternativaTeste1 = new Alternativa();
+        alternativaTeste1.setRespostaCerta(false);
+        Alternativa alternativaTeste2 = new Alternativa();
+        alternativaTeste2.setRespostaCerta(false);
+
+        List<Alternativa> alternativasTeste = new ArrayList<Alternativa>();
+        alternativasTeste.add(alternativaTeste1);
+        alternativasTeste.add(alternativaTeste2);
+
+        Questao questaoTeste = new Questao();
+        questaoTeste.setAlternativas(alternativasTeste);
+        List<Questao> questoesTeste = new ArrayList<Questao>();
+        questoesTeste.add(questaoTeste);
+
+        Prova provaTeste = new Prova();
+        provaTeste.setDisciplina(disciplinaTeste);
+        provaTeste.setQuestoes(questoesTeste);
+
+        DisciplinaRepository disciplinaRepositoryMock = createMock(DisciplinaRepository.class);
+        expect(disciplinaRepositoryMock.findById(provaTeste.getDisciplina().getId())).andReturn(Optional.ofNullable(disciplinaTeste));
+        replay(disciplinaRepositoryMock);
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findByTitulo(provaTeste.getTitulo())).andReturn(Optional.ofNullable(null));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarECriarProva(provaTeste, disciplinaRepositoryMock, provaRepositoryMock);
+            fail();
+        } catch (AlternativaInvalidaException e) {
+            assertEquals("Cada questão deve ter somente uma alternativa certa!", e.getMessage());
+        }
+    }
+
+    @Test
     public void testaCriarProvaComSucesso() {
         Disciplina disciplinaTeste = new Disciplina();
         disciplinaTeste.setId(anyInt());
