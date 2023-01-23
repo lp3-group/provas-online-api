@@ -69,7 +69,7 @@ public class ProvaController {
     @GetMapping("/{id}")
     public ResponseEntity obterProvaPeloId(@PathVariable("id") Integer id) {
         try {
-            Prova prova = service.validarEObterProvaPeloId(id);
+            Prova prova = service.validarEObterProvaPeloId(id, provaRepository);
 
             ProvaDTO retorno = modelMapper.map(prova, ProvaDTO.class);
 
@@ -133,7 +133,7 @@ public class ProvaController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             Estudante estudante = (Estudante) usuarioService.getUsuario(userDetails.getUsername()).get();
 
-            Prova prova = service.validarEObterProvaPeloId(id);
+            Prova prova = service.validarEObterProvaPeloId(id, provaRepository);
 
             List<Integer> idsAlternativas = idsAlternativasMarcadas.stream().map(IdAlternativaDTO::getId)
                     .toList();
