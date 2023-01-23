@@ -87,7 +87,7 @@ public class ProvaService {
         provaRepository.delete(prova);
     }
 
-    public Prova validarEAtualizarProva(Prova prova, ProvaRepository provaRepository)
+    public Prova validarEAtualizarProva(Prova prova, ProvaRepository provaRepository, DisciplinaRepository disciplinaRepository)
             throws ProvaNaoExisteException, DisciplinaNaoExisteException, ProvaJaExisteException {
         Prova provaEncontrada = validar(prova, provaRepository);
         validarQuestoes(prova.getQuestoes());
