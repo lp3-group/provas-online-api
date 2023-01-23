@@ -82,7 +82,7 @@ public class ProvaService {
     }
 
     public void validarEExcluirProva(Integer id) throws ProvaNaoExisteException {
-        Prova prova = validarEObterProvaPeloId(id);
+        Prova prova = validarEObterProvaPeloId(id, provaRepository);
 
         provaRepository.delete(prova);
     }
@@ -103,7 +103,7 @@ public class ProvaService {
 
     private Prova validar(Prova prova)
             throws ProvaNaoExisteException, ProvaJaExisteException {
-        Prova provaASerEditada = validarEObterProvaPeloId(prova.getId());
+        Prova provaASerEditada = validarEObterProvaPeloId(prova.getId(), provaRepository);
         Optional<Prova> provaEncontrada = provaRepository.findByTitulo(prova.getTitulo());
 
         if(provaEncontrada.isPresent() && saoProvasDiferentes(prova, provaEncontrada.get())) {
@@ -118,7 +118,7 @@ public class ProvaService {
     }
 
     public Prova validarEObterProvaRandomizada(Integer id) throws ProvaNaoExisteException {
-        Prova prova = validarEObterProvaPeloId(id);
+        Prova prova = validarEObterProvaPeloId(id, provaRepository);
 
         prova.getQuestoes().forEach(questao -> {
             Collections.shuffle(questao.getAlternativas());
@@ -129,7 +129,7 @@ public class ProvaService {
         return prova;
     }
 
-    public Prova validarEObterProvaPeloId(Integer id) throws ProvaNaoExisteException {
+    public Prova validarEObterProvaPeloId(Integer id, ProvaRepository provaRepository) throws ProvaNaoExisteException {
         return provaRepository.findById(id).orElseThrow(() -> new ProvaNaoExisteException());
     }
 
