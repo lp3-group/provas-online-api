@@ -87,9 +87,9 @@ public class ProvaService {
         provaRepository.delete(prova);
     }
 
-    public Prova validarEAtualizarProva(Prova prova)
+    public Prova validarEAtualizarProva(Prova prova, ProvaRepository provaRepository)
             throws ProvaNaoExisteException, DisciplinaNaoExisteException, ProvaJaExisteException {
-        Prova provaEncontrada = validar(prova);
+        Prova provaEncontrada = validar(prova, provaRepository);
         validarQuestoes(prova.getQuestoes());
 
         Disciplina disciplina =  disciplinaRepository.findById(prova.getDisciplina().getId())
@@ -101,7 +101,7 @@ public class ProvaService {
         return provaRepository.save(prova);
     }
 
-    private Prova validar(Prova prova)
+    private Prova validar(Prova prova, ProvaRepository provaRepository)
             throws ProvaNaoExisteException, ProvaJaExisteException {
         Prova provaASerEditada = validarEObterProvaPeloId(prova.getId(), provaRepository);
         Optional<Prova> provaEncontrada = provaRepository.findByTitulo(prova.getTitulo());
