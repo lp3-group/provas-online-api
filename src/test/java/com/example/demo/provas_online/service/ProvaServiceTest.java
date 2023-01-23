@@ -293,4 +293,25 @@ public class ProvaServiceTest {
             assertEquals("Prova não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaErroPorAtualizarProvasDiferentes() {
+        Prova prova = new Prova();
+        prova.setId(1);
+
+        Prova provaEncontradaComMesmoTitulo = new Prova();
+        provaEncontradaComMesmoTitulo.setId(2);
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(prova.getId())).andReturn(Optional.ofNullable(prova));
+        expect(provaRepositoryMock.findByTitulo(prova.getTitulo())).andReturn(Optional.ofNullable(provaEncontradaComMesmoTitulo));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarEAtualizarProva(prova, provaRepositoryMock);
+            fail();
+        } catch (ProvaJaExisteException e) {
+            assertEquals("Esta prova já existe!", e.getMessage());
+        }
+    }
 }
