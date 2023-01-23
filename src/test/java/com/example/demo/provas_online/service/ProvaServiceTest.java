@@ -230,4 +230,18 @@ public class ProvaServiceTest {
             assertEquals("Prova não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaValidarEObterProvaComSucesso() {
+        Integer id = anyInt();
+        Prova prova = new Prova();
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(id)).andReturn(Optional.ofNullable(prova));
+        replay(provaRepositoryMock);
+
+        Prova retorno = this.provaService.validarEObterProvaPeloId(id, provaRepositoryMock);
+
+        assertEquals(prova, retorno);
+    }
 }
