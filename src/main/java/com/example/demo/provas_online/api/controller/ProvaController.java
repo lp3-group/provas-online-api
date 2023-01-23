@@ -85,7 +85,7 @@ public class ProvaController {
             Prova prova = modelMapper.map(corpoRequisicao, Prova.class);
             prova.setId(id);
 
-            Prova provaEditada = service.validarEAtualizarProva(prova);
+            Prova provaEditada = service.validarEAtualizarProva(prova, provaRepository);
 
             ProvaDTO retorno = modelMapper.map(provaEditada, ProvaDTO.class);
 
