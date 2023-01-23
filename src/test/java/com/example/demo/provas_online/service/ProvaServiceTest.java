@@ -358,4 +358,42 @@ public class ProvaServiceTest {
             assertEquals("Disciplina não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaAtualizarProvaComSucesso() {
+        Disciplina disciplinaTeste = new Disciplina();
+        disciplinaTeste.setId(anyInt());
+
+        Alternativa alternativaTeste1 = new Alternativa();
+        alternativaTeste1.setRespostaCerta(true);
+        Alternativa alternativaTeste2 = new Alternativa();
+        alternativaTeste2.setRespostaCerta(false);
+
+        List<Alternativa> alternativasTeste = new ArrayList<Alternativa>();
+        alternativasTeste.add(alternativaTeste1);
+        alternativasTeste.add(alternativaTeste2);
+
+        Questao questaoTeste = new Questao();
+        questaoTeste.setAlternativas(alternativasTeste);
+        List<Questao> questoesTeste = new ArrayList<Questao>();
+        questoesTeste.add(questaoTeste);
+
+        Prova provaTeste = new Prova();
+        provaTeste.setDisciplina(disciplinaTeste);
+        provaTeste.setQuestoes(questoesTeste);
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(provaTeste.getId())).andReturn(Optional.ofNullable(provaTeste));
+        expect(provaRepositoryMock.findByTitulo(provaTeste.getTitulo())).andReturn(Optional.ofNullable(null));
+        expect(provaRepositoryMock.save(provaTeste)).andReturn(provaTeste);
+        replay(provaRepositoryMock);
+
+        DisciplinaRepository disciplinaRepositoryMock = createMock(DisciplinaRepository.class);
+        expect(disciplinaRepositoryMock.findById(disciplinaTeste.getId())).andReturn(Optional.ofNullable(disciplinaTeste));
+        replay(disciplinaRepositoryMock);
+
+        Prova retorno = this.provaService.validarEAtualizarProva(provaTeste, provaRepositoryMock, disciplinaRepositoryMock);
+
+        assertEquals(provaTeste, retorno);
+    }
 }
