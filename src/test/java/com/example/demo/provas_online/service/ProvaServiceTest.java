@@ -3,10 +3,7 @@ package com.example.demo.provas_online.service;
 import static org.easymock.EasyMock.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.example.demo.provas_online.exception.AlternativaInvalidaException;
-import com.example.demo.provas_online.exception.DisciplinaNaoExisteException;
-import com.example.demo.provas_online.exception.ProvaJaExisteException;
-import com.example.demo.provas_online.exception.QuestaoInvalidaException;
+import com.example.demo.provas_online.exception.*;
 import com.example.demo.provas_online.model.entity.Alternativa;
 import com.example.demo.provas_online.model.entity.Disciplina;
 import com.example.demo.provas_online.model.entity.Prova;
@@ -216,5 +213,21 @@ public class ProvaServiceTest {
         List<Prova> retorno = this.provaService.obterProvas(provaRepositoryMock);
 
         assertEquals(listaProvas, retorno);
+    }
+
+    @Test
+    public void testaValidarProvaEFalhar() {
+        Integer id = anyInt();
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(id)).andReturn(Optional.ofNullable(null));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarEObterProvaPeloId(id, provaRepositoryMock);
+            fail();
+        } catch (ProvaNaoExisteException e) {
+            assertEquals("Prova não encontrada!", e.getMessage());
+        }
     }
 }
