@@ -276,4 +276,21 @@ public class ProvaServiceTest {
 
         verify(provaRepositoryMock);
     }
+
+    @Test
+    public void testaNaoEncontrarProvaAoAtualizar() {
+        Prova prova = new Prova();
+        Integer id = anyInt();
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(id)).andReturn(Optional.ofNullable(null));
+        replay(provaRepositoryMock);
+
+        try {
+            this.provaService.validarEAtualizarProva(prova, provaRepositoryMock);
+            fail();
+        } catch (ProvaNaoExisteException e) {
+            assertEquals("Prova não encontrada!", e.getMessage());
+        }
+    }
 }
