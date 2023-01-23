@@ -81,7 +81,7 @@ public class ProvaService {
         return provaRepository.findAll();
     }
 
-    public void validarEExcluirProva(Integer id) throws ProvaNaoExisteException {
+    public void validarEExcluirProva(Integer id, ProvaRepository provaRepository) throws ProvaNaoExisteException {
         Prova prova = validarEObterProvaPeloId(id, provaRepository);
 
         provaRepository.delete(prova);
