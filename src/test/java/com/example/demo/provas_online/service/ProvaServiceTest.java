@@ -260,4 +260,20 @@ public class ProvaServiceTest {
             assertEquals("Prova não encontrada!", e.getMessage());
         }
     }
+
+    @Test
+    public void testaValidarEExcluirProvaComSucesso() {
+        Integer id = anyInt();
+        Prova prova = new Prova();
+
+        ProvaRepository provaRepositoryMock = createMock(ProvaRepository.class);
+        expect(provaRepositoryMock.findById(id)).andReturn(Optional.ofNullable(prova));
+        provaRepositoryMock.delete(prova);
+        expectLastCall().once();
+        replay(provaRepositoryMock);
+
+        this.provaService.validarEExcluirProva(id, provaRepositoryMock);
+
+        verify(provaRepositoryMock);
+    }
 }
