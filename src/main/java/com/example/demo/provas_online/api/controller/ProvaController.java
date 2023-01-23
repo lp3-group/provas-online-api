@@ -102,7 +102,7 @@ public class ProvaController {
     @DeleteMapping("/{id}")
     public ResponseEntity excluirProva(@PathVariable("id") Integer id) {
         try {
-            service.validarEExcluirProva(id);
+            service.validarEExcluirProva(id, provaRepository);
 
             return ResponseEntity.noContent().build();
         } catch (ProvaNaoExisteException e) {
